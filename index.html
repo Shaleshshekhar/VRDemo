@@ -4,7 +4,9 @@
   <meta charset="UTF-8" />
   <title>Open Gift 🎁</title>
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-
+  
+  <!-- Link to CSS file -->
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
@@ -16,13 +18,13 @@
 
   <!-- Background audio -->
   <audio id="bgMusic" loop preload="auto">
-    <source src="/bgmusic.mp3" type="audio/mpeg" />
+    <source src="main/bgmusic.mp3" type="audio/mpeg" />
   </audio>
 
   <!-- 3D Viewer -->
   <model-viewer
     id="giftViewer"
-    src="/Dice_world_animation_VR10.glb"
+    src="main/Dice_world_animation_VR10.glb"
     alt="3D Gift"
     camera-controls
     autoplay
