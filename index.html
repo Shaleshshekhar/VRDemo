@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Open Gift 🎁</title>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+</head>
+<body>
+
+  <!-- Splash screen -->
+  <div id="splash">
+    <h1>🎁 Open Your Gift in VR</h1>
+    <button id="openBtn">Open Gift</button>
+  </div>
+
+  <!-- Background audio -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="/bgmusic.mp3" type="audio/mpeg" />
+  </audio>
+
+  <!-- 3D Viewer -->
+  <model-viewer
+    id="giftViewer"
+    src="/Dice_world_animation_VR10.glb"
+    alt="3D Gift"
+    camera-controls
+    autoplay
+    ar
+    ar-modes="webxr scene-viewer quick-look"
+    xr-environment
+    shadow-intensity="1"
+    exposure="1"
+    environment-image="neutral"
+  >
+    <button slot="ar-button" class="ar-button">Enter VR</button>
+  </model-viewer>
+
+  <script>
+    const splash = document.getElementById('splash');
+    const viewer = document.getElementById('giftViewer');
+    const openBtn = document.getElementById('openBtn');
+    const bgMusic = document.getElementById('bgMusic');
+
+    openBtn.addEventListener('click', async () => {
+      // Play music
+      bgMusic.play().catch(err => console.log('🎵 Audio blocked:', err));
+
+      // Hide splash
+      splash.style.opacity = 0;
+      setTimeout(() => splash.style.display = 'none', 1000);
+
+      // Show model viewer
+      viewer.style.display = 'block';
+
+      // Try entering VR automatically if supported
+      if (navigator.xr && navigator.xr.isSessionSupported) {
+        try {
+          const supported = await navigator.xr.isSessionSupported('immersive-vr');
+          if (supported) viewer.activateAR();
+        } catch (e) {
+          console.warn('⚠️ VR not supported:', e);
+        }
+      }
+    });
+  </script>
+</body>
+</html>
