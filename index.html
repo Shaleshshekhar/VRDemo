@@ -6,24 +6,28 @@
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
   <link rel="stylesheet" href="style.css" />
 
-  <!-- Force preload of GLB -->
+  <!-- Force browser to preload the GLB file -->
   <link rel="preload" as="fetch" href="https://dl.dropboxusercontent.com/scl/fi/rx30087i68e6h9ohg0c2a/Dice_world_animation_VR_Export_GLTF.glb?rlkey=ezhbftw0pj3mp0hmsv5mh0ip1&st=amcp4ucd" type="model/gltf-binary" crossorigin="anonymous">
 </head>
 <body>
 
+  <!-- Splash screen -->
   <div id="splash">
     <h1>🎁 Open Your Gift in VR</h1>
     <button id="openBtn">Open Gift</button>
   </div>
-
+  
+  <!-- Loader -->
   <div id="loader">
     <div class="loader"></div>
   </div>
 
+  <!-- Background audio -->
   <audio id="bgMusic" loop preload="auto">
     <source src="bgmusic.mp3" type="audio/mpeg" />
   </audio>
 
+  <!-- Model Viewer -->
   <model-viewer
     id="giftViewer"
     src="https://dl.dropboxusercontent.com/scl/fi/rx30087i68e6h9ohg0c2a/Dice_world_animation_VR_Export_GLTF.glb?rlkey=ezhbftw0pj3mp0hmsv5mh0ip1&st=amcp4ucd"
@@ -37,55 +41,45 @@
     shadow-intensity="1"
     exposure="1"
     environment-image="neutral"
-    style="visibility: hidden;" >
+    style="visibility: hidden;"
+  >
     <button slot="ar-button" class="ar-button">Enter VR</button>
   </model-viewer>
 
-<script>
-  const splash = document.getElementById('splash');
-  const viewer = document.getElementById('giftViewer');
-  const openBtn = document.getElementById('openBtn');
-  const bgMusic = document.getElementById('bgMusic');
-  const loader = document.getElementById('loader');
+  <script>
+    const splash = document.getElementById('splash');
+    const viewer = document.getElementById('giftViewer');
+    const openBtn = document.getElementById('openBtn');
+    const bgMusic = document.getElementById('bgMusic');
+    const loader = document.getElementById('loader');
 
-  let modelLoaded = false;
-  let userClicked = false;
+    let modelLoaded = false;
+    let userClicked = false;
 
-  function tryShowViewer() {
-    if (modelLoaded && userClicked) {
+    function showViewerAndEnterXR() {
       loader.style.display = 'none';
       viewer.style.visibility = 'visible';
 
-      // Optionally trigger VR/AR
-      if (navigator.xr && navigator.xr.isSessionSupported) {
-        navigator.xr.isSessionSupported('immersive-vr').then((supported) => {
-          if (supported) viewer.activateAR();
-        }).catch(console.warn);
-      }
+      // Attempt AR/VR entry immediately after user click
+      viewer.activateAR();
     }
-  }
 
-  // 1️⃣ User clicks button
-  openBtn.addEventListener('click', () => {
-    userClicked = true;
+    openBtn.addEventListener('click', () => {
+      userClicked = true;
 
-    // Fade out splash
-    splash.style.opacity = 0;
-    setTimeout(() => splash.style.display = 'none', 1000);
+      splash.style.opacity = 0;
+      setTimeout(() => splash.style.display = 'none', 1000);
 
-    // Start music + show loader
-    bgMusic.play().catch(err => console.log('🎵 Audio blocked:', err));
-    loader.style.display = 'flex';
+      bgMusic.play().catch(err => console.log('🎵 Audio blocked:', err));
+      loader.style.display = 'flex';
 
-    tryShowViewer();
-  });
+      if (modelLoaded) {
+        showViewerAndEnterXR();
+      }
+    });
 
-  // 2️⃣ Model is loaded
-  viewer.addEventListener('load', () => {
-    modelLoaded = true;
-    tryShowViewer();
-  });
-</script>
+    viewer.addEventListener('load', () => {
+      modelLoaded = true;
 
-</body>
-</html>
+      if (userClicked) {
+        sho
