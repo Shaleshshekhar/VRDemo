@@ -17,7 +17,8 @@ body {
 /* Splash Screen */
 #splash {
   position: absolute;
-  top: 0; left: 0;
+  top: 0;
+  left: 0;
   width: 100vw;
   height: 100vh;
   background: radial-gradient(circle, #111, #000);
@@ -78,8 +79,8 @@ body {
 }
 
 @keyframes l14 {
-  50%   { background-position: right, left, center, right; }
-  100% { background-position: left, left, center, right; }
+  0%   { background-position: left, left, center, left; }
+  100% { background-position: right, right, center, right; }
 }
 
 /* Model Viewer */
@@ -87,7 +88,7 @@ model-viewer {
   width: 100vw;
   height: 100vh;
   background-color: #000;
-  visibility: hidden; /* instead of display: none */
+  visibility: hidden;
 }
 
 /* AR Button */
