@@ -80,7 +80,7 @@ body {
 
 @keyframes l14 {
   50%   { background-position: right, left, center, right; }
-  100% { background-position: left, lefft, center, right; }
+  100%  { background-position: left, left, center, right; }
 }
 
 /* Model Viewer */
