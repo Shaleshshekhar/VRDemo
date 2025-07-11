@@ -87,6 +87,7 @@ model-viewer {
   width: 100vw;
   height: 100vh;
   background-color: #000;
+  visibility: hidden; /* instead of display: none */
 }
 
 /* AR Button */
