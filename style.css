@@ -4,50 +4,6 @@
       background: #000;
       color: white;
       font-family: sans-serif;
-      text-align: center;
-      overflow: hidden;
-    }
-    
-    .splash-container {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      animation: fadeIn 2s ease-in-out;
-    }
-    
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 20px;
-    }
-    
-    .open-button, .ar-button {
-      background-color: #ff4081;
-      color: white;
-      border: none;
-      padding: 14px 28px;
-      border-radius: 10px;
-      font-size: 1rem;
-      cursor: pointer;
-      box-shadow: 0 0 20px rgba(255, 64, 129, 0.5);
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    body {
-      margin: 0;
-      background: #000;
-      font-family: sans-serif;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
       overflow: hidden;
     }
 
@@ -70,7 +26,7 @@
       margin-bottom: 20px;
     }
 
-    #openBtn {
+    #openBtn, .ar-button {
       padding: 14px 28px;
       font-size: 1.2rem;
       border: none;
@@ -78,6 +34,7 @@
       background-color: #ff4081;
       color: white;
       cursor: pointer;
+      box-shadow: 0 0 20px rgba(255, 64, 129, 0.5);
     }
 
     model-viewer {
@@ -85,4 +42,33 @@
       height: 100vh;
       background-color: #000;
       display: none;
+    }
+
+    #loader {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #000;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      font-size: 1.2rem;
+      z-index: 5;
+    }
+
+    .spinner {
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-left-color: #ff4081;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      margin-bottom: 20px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
