@@ -41,37 +41,51 @@
     <button slot="ar-button" class="ar-button">Enter VR</button>
   </model-viewer>
 
-  <script>
-    const splash = document.getElementById('splash');
-    const viewer = document.getElementById('giftViewer');
-    const openBtn = document.getElementById('openBtn');
-    const bgMusic = document.getElementById('bgMusic');
-    const loader = document.getElementById('loader');
+<script>
+  const splash = document.getElementById('splash');
+  const viewer = document.getElementById('giftViewer');
+  const openBtn = document.getElementById('openBtn');
+  const bgMusic = document.getElementById('bgMusic');
+  const loader = document.getElementById('loader');
 
-    openBtn.addEventListener('click', async () => {
-      bgMusic.play().catch(err => console.log('🎵 Audio blocked:', err));
+  let modelLoaded = false;
+  let userClicked = false;
 
-      splash.style.opacity = 0;
-      setTimeout(() => splash.style.display = 'none', 1000);
-
-      loader.style.display = 'flex';
-
-      // Make viewer visible
+  function tryShowViewer() {
+    if (modelLoaded && userClicked) {
+      loader.style.display = 'none';
       viewer.style.visibility = 'visible';
 
+      // Optionally trigger VR/AR
       if (navigator.xr && navigator.xr.isSessionSupported) {
-        try {
-          const supported = await navigator.xr.isSessionSupported('immersive-vr');
+        navigator.xr.isSessionSupported('immersive-vr').then((supported) => {
           if (supported) viewer.activateAR();
-        } catch (e) {
-          console.warn('⚠️ VR not supported:', e);
-        }
+        }).catch(console.warn);
       }
-    });
+    }
+  }
 
-    viewer.addEventListener('load', () => {
-      loader.style.display = 'none';
-    });
-  </script>
+  // 1️⃣ User clicks button
+  openBtn.addEventListener('click', () => {
+    userClicked = true;
+
+    // Fade out splash
+    splash.style.opacity = 0;
+    setTimeout(() => splash.style.display = 'none', 1000);
+
+    // Start music + show loader
+    bgMusic.play().catch(err => console.log('🎵 Audio blocked:', err));
+    loader.style.display = 'flex';
+
+    tryShowViewer();
+  });
+
+  // 2️⃣ Model is loaded
+  viewer.addEventListener('load', () => {
+    modelLoaded = true;
+    tryShowViewer();
+  });
+</script>
+
 </body>
 </html>
