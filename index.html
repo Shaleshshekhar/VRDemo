@@ -8,7 +8,7 @@
 </head>
 <body>
 
-   <!-- Splash screen -->
+  <!-- Splash screen -->
   <div id="splash">
     <h1>🎁 Open Your Gift in VR</h1>
     <button id="openBtn">Open Gift</button>
@@ -19,13 +19,12 @@
     <div class="loader"></div>
   </div>
 
-
   <!-- Background audio -->
   <audio id="bgMusic" loop preload="auto">
     <source src="bgmusic.mp3" type="audio/mpeg" />
   </audio>
 
-  <!-- 3D Viewer -->
+  <!-- 3D Viewer (offscreen to preload the GLB) -->
   <model-viewer
     id="giftViewer"
     src="https://dl.dropboxusercontent.com/scl/fi/rx30087i68e6h9ohg0c2a/Dice_world_animation_VR_Export_GLTF.glb?rlkey=ezhbftw0pj3mp0hmsv5mh0ip1&st=amcp4ucd"
@@ -39,6 +38,7 @@
     shadow-intensity="1"
     exposure="1"
     environment-image="neutral"
+    style="position: absolute; top: -9999px; left: -9999px;" <!-- preload without visibility -->
   >
     <button slot="ar-button" class="ar-button">Enter VR</button>
   </model-viewer>
@@ -51,18 +51,17 @@
     const loader = document.getElementById('loader');
 
     openBtn.addEventListener('click', async () => {
-      // Play music
       bgMusic.play().catch(err => console.log('🎵 Audio blocked:', err));
 
-      // Hide splash
       splash.style.opacity = 0;
       setTimeout(() => splash.style.display = 'none', 1000);
 
-      // Show loader and viewer
       loader.style.display = 'flex';
+
+      // Reveal the model-viewer from offscreen
+      viewer.style.position = 'static';
       viewer.style.display = 'block';
 
-      // Optionally try auto-VR (not always reliable)
       if (navigator.xr && navigator.xr.isSessionSupported) {
         try {
           const supported = await navigator.xr.isSessionSupported('immersive-vr');
@@ -73,7 +72,6 @@
       }
     });
 
-    // Hide loader when 3D model is ready
     viewer.addEventListener('load', () => {
       loader.style.display = 'none';
     });
