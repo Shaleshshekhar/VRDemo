@@ -5,26 +5,25 @@
   <title>Open Gift 🎁</title>
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
   <link rel="stylesheet" href="style.css" />
+
+  <!-- Force preload of GLB -->
+  <link rel="preload" as="fetch" href="https://dl.dropboxusercontent.com/scl/fi/rx30087i68e6h9ohg0c2a/Dice_world_animation_VR_Export_GLTF.glb?rlkey=ezhbftw0pj3mp0hmsv5mh0ip1&st=amcp4ucd" type="model/gltf-binary" crossorigin="anonymous">
 </head>
 <body>
 
-  <!-- Splash screen -->
   <div id="splash">
     <h1>🎁 Open Your Gift in VR</h1>
     <button id="openBtn">Open Gift</button>
   </div>
-  
-  <!-- Loader -->
+
   <div id="loader">
     <div class="loader"></div>
   </div>
 
-  <!-- Background audio -->
   <audio id="bgMusic" loop preload="auto">
     <source src="bgmusic.mp3" type="audio/mpeg" />
   </audio>
 
-  <!-- 3D Viewer (offscreen to preload the GLB) -->
   <model-viewer
     id="giftViewer"
     src="https://dl.dropboxusercontent.com/scl/fi/rx30087i68e6h9ohg0c2a/Dice_world_animation_VR_Export_GLTF.glb?rlkey=ezhbftw0pj3mp0hmsv5mh0ip1&st=amcp4ucd"
@@ -38,7 +37,7 @@
     shadow-intensity="1"
     exposure="1"
     environment-image="neutral"
-    style="position: absolute; top: -9999px; left: -9999px;" <!-- preload without visibility -->
+    style="visibility: hidden;"  <!-- change from display:none -->
   >
     <button slot="ar-button" class="ar-button">Enter VR</button>
   </model-viewer>
@@ -58,9 +57,8 @@
 
       loader.style.display = 'flex';
 
-      // Reveal the model-viewer from offscreen
-      viewer.style.position = 'static';
-      viewer.style.display = 'block';
+      // Make viewer visible
+      viewer.style.visibility = 'visible';
 
       if (navigator.xr && navigator.xr.isSessionSupported) {
         try {
