@@ -15,9 +15,9 @@
   </div>
 
   <!-- Loader -->
-  <div id="loader" style="display: none;">
+  <div id="loader">
     <div class="spinner"></div>
-    Loading Dice...
+    <p>Loading your gift...</p>
   </div>
 
   <!-- Background audio -->
@@ -49,7 +49,7 @@
     const bgMusic = document.getElementById('bgMusic');
     const loader = document.getElementById('loader');
 
-    openBtn.addEventListener('click', () => {
+    openBtn.addEventListener('click', async () => {
       // Play music
       bgMusic.play().catch(err => console.log('🎵 Audio blocked:', err));
 
@@ -57,22 +57,24 @@
       splash.style.opacity = 0;
       setTimeout(() => splash.style.display = 'none', 1000);
 
-      // Show loader
+      // Show loader and viewer
       loader.style.display = 'flex';
-
-      // Show viewer (will still load in background)
       viewer.style.display = 'block';
-    });
 
-    viewer.addEventListener('poster-dismissed', () => {
-      // fallback if poster used
-      loader.style.display = 'none';
-    });
-
-    viewer.addEventListener('model-visibility', (e) => {
-      if (e.detail.visible) {
-        loader.style.display = 'none';
+      // Optionally try auto-VR (not always reliable)
+      if (navigator.xr && navigator.xr.isSessionSupported) {
+        try {
+          const supported = await navigator.xr.isSessionSupported('immersive-vr');
+          if (supported) viewer.activateAR();
+        } catch (e) {
+          console.warn('⚠️ VR not supported:', e);
+        }
       }
+    });
+
+    // Hide loader when 3D model is ready
+    viewer.addEventListener('load', () => {
+      loader.style.display = 'none';
     });
   </script>
 </body>
