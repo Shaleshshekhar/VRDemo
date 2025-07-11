@@ -77,10 +77,11 @@ body {
 }
 
 @keyframes l14 {
-  100%  {
-    background-position: right, left, center, right;
-  }
+  0%   { background-position: left, left, center, right; }
+  50%  { background-position: right, right, center, left; }
+  100% { background-position: left, left, center, right; }
 }
+
 
 /* Model Viewer */
 model-viewer {
