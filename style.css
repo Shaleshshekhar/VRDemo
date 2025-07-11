@@ -59,7 +59,7 @@ body {
   z-index: 5;
 }
 
-/* Glowing Dot Loader with Ping-Pong Motion */
+/* Glowing Dot Loader */
 .loader {
   height: 50px;
   aspect-ratio: 2;
@@ -73,18 +73,13 @@ body {
     #000;
   background-repeat: no-repeat;
   filter: blur(4px) contrast(10);
-  animation: l14 1s infinite alternate;
+  animation: l14 2s infinite;
 }
 
 @keyframes l14 {
-  0% {
-    background-position: left, center, right, right;
-  }
-  100% {
-    background-position: right, left, center, left;
-  }
+  50%  { background-position: right, left, center, right; }
+  100%  {background-position: left, left, center, right; }
 }
-
 
 /* Model Viewer */
 model-viewer {
