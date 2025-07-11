@@ -27,24 +27,20 @@
     <source src="bgmusic.mp3" type="audio/mpeg" />
   </audio>
 
-  <!-- Model Viewer -->
   <model-viewer
-    id="giftViewer"
-    src="https://dl.dropboxusercontent.com/scl/fi/rx30087i68e6h9ohg0c2a/Dice_world_animation_VR_Export_GLTF.glb?rlkey=ezhbftw0pj3mp0hmsv5mh0ip1&st=amcp4ucd"
-    alt="3D Gift"
-    preload="auto"
-    camera-controls
-    autoplay
-    ar
-    ar-modes="webxr scene-viewer quick-look"
-    xr-environment
-    shadow-intensity="1"
-    exposure="1"
-    environment-image="neutral"
-    style="visibility: hidden;"
-  >
-    <button slot="ar-button" class="ar-button">Enter VR</button>
-  </model-viewer>
+  id="giftViewer"
+  src="your.glb"
+  ar
+  autoplay
+  camera-controls
+  ar-modes="webxr scene-viewer quick-look"
+  xr-environment
+  shadow-intensity="1"
+  environment-image="neutral"
+  style="visibility:hidden;"  <!-- default hidden -->
+>
+  <button slot="ar-button" class="ar-button">Enter VR</button>
+</model-viewer>
 
 <script>
   const splash = document.getElementById('splash');
@@ -54,56 +50,61 @@
   const loader = document.getElementById('loader');
 
   let modelLoaded = false;
-  let userClicked = false;
 
-  // Called ONLY after user clicks and model is loaded
-  function activateVRorAR() {
+  function fallbackToModelView() {
+    console.warn('⚠️ WebXR not available or failed. Showing model in 3D viewer.');
+    loader.style.display = 'none';
+    viewer.style.visibility = 'visible';
+  }
+
+  async function tryEnterVR() {
     loader.style.display = 'none';
     viewer.style.visibility = 'visible';
 
     try {
-      console.log('🎯 Attempting to call activateAR() now...');
-      viewer.activateAR();
+      console.log('🎯 Trying activateAR() for immersive mode...');
+      await viewer.activateAR();
     } catch (err) {
-      console.error('❌ Error calling activateAR:', err);
+      console.error('❌ activateAR() failed:', err);
+      fallbackToModelView();
     }
   }
 
-  openBtn.addEventListener('click', () => {
-    console.log('👆 User clicked "Open Gift"');
-    userClicked = true;
-
+  openBtn.addEventListener('click', async () => {
+    console.log('👆 User clicked Open Gift');
+    
     splash.style.opacity = 0;
     setTimeout(() => splash.style.display = 'none', 1000);
 
-    bgMusic.play().then(() => {
-      console.log('🎵 Background music started');
-    }).catch(err => {
-      console.warn('🎵 Audio playback blocked:', err);
-    });
-
+    bgMusic.play().catch(err => console.warn('🎵 Music failed:', err));
     loader.style.display = 'flex';
 
-    if (modelLoaded) {
-      console.log('📦 Model already loaded. Proceeding to VR/AR immediately.');
-      activateVRorAR();
+    // Wait for model to load before trying VR
+    if (!modelLoaded) {
+      console.log('⏳ Waiting for model to load...');
+      return;
+    }
+
+    // Try immersive mode if possible
+    if (navigator.xr && navigator.xr.isSessionSupported) {
+      const supported = await navigator.xr.isSessionSupported('immersive-vr');
+      console.log(`🔍 immersive-vr supported: ${supported}`);
+      if (supported) {
+        tryEnterVR();
+      } else {
+        fallbackToModelView();
+      }
     } else {
-      console.log('⏳ Model not yet loaded. Waiting for "load" event.');
+      fallbackToModelView();
     }
   });
 
   viewer.addEventListener('load', () => {
-    console.log('✅ <model-viewer> has finished loading the GLB.');
+    console.log('✅ Model loaded.');
     modelLoaded = true;
-
-    if (userClicked) {
-      console.log('🟢 User already clicked. Proceeding to VR/AR.');
-      activateVRorAR();
-    } else {
-      console.log('🔵 Model loaded, waiting for user to click.');
-    }
   });
 </script>
+
 
 </body>
 </html>
