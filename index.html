@@ -46,45 +46,74 @@
     <button slot="ar-button" class="ar-button">Enter VR</button>
   </model-viewer>
 
-  <script>
-    const splash = document.getElementById('splash');
-    const viewer = document.getElementById('giftViewer');
-    const openBtn = document.getElementById('openBtn');
-    const bgMusic = document.getElementById('bgMusic');
-    const loader = document.getElementById('loader');
+<script>
+  const splash = document.getElementById('splash');
+  const viewer = document.getElementById('giftViewer');
+  const openBtn = document.getElementById('openBtn');
+  const bgMusic = document.getElementById('bgMusic');
+  const loader = document.getElementById('loader');
 
-    let modelLoaded = false;
-    let userClicked = false;
+  let modelLoaded = false;
+  let userClicked = false;
 
-    function showViewerAndEnterXR() {
-      loader.style.display = 'none';
-      viewer.style.visibility = 'visible';
+  function showViewerAndEnterXR() {
+    console.log('✅ Showing model viewer and trying to enter AR/VR...');
 
-      // Attempt AR/VR entry immediately after user click
-      viewer.activateAR();
+    loader.style.display = 'none';
+    viewer.style.visibility = 'visible';
+
+    // Log AR/VR capabilities
+    if (navigator.xr && navigator.xr.isSessionSupported) {
+      navigator.xr.isSessionSupported('immersive-vr').then((supported) => {
+        if (supported) {
+          console.log('🎯 WebXR immersive-vr is supported. Calling activateAR()...');
+          viewer.activateAR();
+        } else {
+          console.warn('🚫 immersive-vr NOT supported on this device.');
+        }
+      }).catch(err => {
+        console.error('❌ Error checking XR support:', err);
+      });
+    } else {
+      console.warn('🚫 navigator.xr or isSessionSupported is not available.');
     }
+  }
 
-    openBtn.addEventListener('click', () => {
-      userClicked = true;
+  openBtn.addEventListener('click', () => {
+    console.log('👆 User clicked "Open Gift"');
+    userClicked = true;
 
-      splash.style.opacity = 0;
-      setTimeout(() => splash.style.display = 'none', 1000);
+    splash.style.opacity = 0;
+    setTimeout(() => splash.style.display = 'none', 1000);
 
-      bgMusic.play().catch(err => console.log('🎵 Audio blocked:', err));
-      loader.style.display = 'flex';
-
-      if (modelLoaded) {
-        showViewerAndEnterXR();
-      }
+    bgMusic.play().then(() => {
+      console.log('🎵 Background music started');
+    }).catch(err => {
+      console.warn('🎵 Audio playback blocked:', err);
     });
 
-    viewer.addEventListener('load', () => {
-      modelLoaded = true;
+    loader.style.display = 'flex';
 
-      if (userClicked) {
-        showViewerAndEnterXR();
-      }
-    });
-  </script>
+    if (modelLoaded) {
+      console.log('📦 Model is already loaded, proceeding to show viewer...');
+      showViewerAndEnterXR();
+    } else {
+      console.log('⏳ Waiting for model to load...');
+    }
+  });
+
+  viewer.addEventListener('load', () => {
+    console.log('✅ <model-viewer> model loaded');
+    modelLoaded = true;
+
+    if (userClicked) {
+      console.log('🟢 User has already clicked. Proceeding to show viewer...');
+      showViewerAndEnterXR();
+    } else {
+      console.log('🕒 Model loaded, waiting for user click...');
+    }
+  });
+</script>
+
 </body>
 </html>
