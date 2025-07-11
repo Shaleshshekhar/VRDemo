@@ -79,7 +79,7 @@ body {
 }
 
 @keyframes l14 {
-  0%   { background-position: right, left, center, right; }
+  50%   { background-position: right, left, center, right; }
   100% { background-position: left, lefft, center, right; }
 }
 
