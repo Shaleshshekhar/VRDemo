@@ -5,8 +5,6 @@
   <title>Open Gift 🎁</title>
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
   <link rel="stylesheet" href="style.css" />
-
-  <!-- Force browser to preload the GLB file -->
   <link rel="preload" as="fetch" href="https://dl.dropboxusercontent.com/scl/fi/rx30087i68e6h9ohg0c2a/Dice_world_animation_VR_Export_GLTF.glb?rlkey=ezhbftw0pj3mp0hmsv5mh0ip1&st=amcp4ucd" type="model/gltf-binary" crossorigin="anonymous">
 </head>
 <body>
@@ -27,84 +25,50 @@
     <source src="bgmusic.mp3" type="audio/mpeg" />
   </audio>
 
+  <!-- Model Viewer -->
   <model-viewer
-  id="giftViewer"
-  src="https://dl.dropboxusercontent.com/scl/fi/rx30087i68e6h9ohg0c2a/Dice_world_animation_VR_Export_GLTF.glb?rlkey=ezhbftw0pj3mp0hmsv5mh0ip1&st=amcp4ucd"
-  ar
-  autoplay
-  camera-controls
-  ar-modes="webxr scene-viewer quick-look"
-  xr-environment
-  shadow-intensity="1"
-  environment-image="neutral"
-  style="visibility:hidden;"  <!-- default hidden -->
->
-  <button slot="ar-button" class="ar-button">Enter VR</button>
-</model-viewer>
+    id="giftViewer"
+    src="https://dl.dropboxusercontent.com/scl/fi/rx30087i68e6h9ohg0c2a/Dice_world_animation_VR_Export_GLTF.glb?rlkey=ezhbftw0pj3mp0hmsv5mh0ip1&st=amcp4ucd"
+    ar
+    autoplay
+    camera-controls
+    ar-modes="webxr scene-viewer quick-look"
+    xr-environment
+    shadow-intensity="1"
+    environment-image="neutral"
+    style="visibility: hidden;"
+  >
+    <button slot="ar-button" class="ar-button">Enter VR</button>
+  </model-viewer>
 
-<script>
-  const splash = document.getElementById('splash');
-  const viewer = document.getElementById('giftViewer');
-  const openBtn = document.getElementById('openBtn');
-  const bgMusic = document.getElementById('bgMusic');
-  const loader = document.getElementById('loader');
+  <script>
+    const splash = document.getElementById('splash');
+    const viewer = document.getElementById('giftViewer');
+    const openBtn = document.getElementById('openBtn');
+    const bgMusic = document.getElementById('bgMusic');
+    const loader = document.getElementById('loader');
 
-  let modelLoaded = false;
+    openBtn.addEventListener('click', () => {
+      console.log('👆 Open Gift clicked');
 
-  function fallbackToModelView() {
-    console.warn('⚠️ WebXR not available or failed. Showing model in 3D viewer.');
-    loader.style.display = 'none';
-    viewer.style.visibility = 'visible';
-  }
+      splash.style.opacity = 0;
+      setTimeout(() => splash.style.display = 'none', 1000);
 
-  async function tryEnterVR() {
-    loader.style.display = 'none';
-    viewer.style.visibility = 'visible';
+      loader.style.display = 'flex';
 
-    try {
-      console.log('🎯 Trying activateAR() for immersive mode...');
-      await viewer.activateAR();
-    } catch (err) {
-      console.error('❌ activateAR() failed:', err);
-      fallbackToModelView();
-    }
-  }
+      bgMusic.play().then(() => {
+        console.log('🎵 Background music started');
+      }).catch(err => {
+        console.warn('🎵 Music play failed:', err);
+      });
+    });
 
-  openBtn.addEventListener('click', async () => {
-    console.log('👆 User clicked Open Gift');
-    
-    splash.style.opacity = 0;
-    setTimeout(() => splash.style.display = 'none', 1000);
+    viewer.addEventListener('load', () => {
+      console.log('✅ 3D model loaded');
 
-    bgMusic.play().catch(err => console.warn('🎵 Music failed:', err));
-    loader.style.display = 'flex';
-
-    // Wait for model to load before trying VR
-    if (!modelLoaded) {
-      console.log('⏳ Waiting for model to load...');
-      return;
-    }
-
-    // Try immersive mode if possible
-    if (navigator.xr && navigator.xr.isSessionSupported) {
-      const supported = await navigator.xr.isSessionSupported('immersive-vr');
-      console.log(`🔍 immersive-vr supported: ${supported}`);
-      if (supported) {
-        tryEnterVR();
-      } else {
-        fallbackToModelView();
-      }
-    } else {
-      fallbackToModelView();
-    }
-  });
-
-  viewer.addEventListener('load', () => {
-    console.log('✅ Model loaded.');
-    modelLoaded = true;
-  });
-</script>
-
-
+      loader.style.display = 'none';
+      viewer.style.visibility = 'visible';
+    });
+  </script>
 </body>
 </html>
