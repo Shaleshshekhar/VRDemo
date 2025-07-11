@@ -45,6 +45,7 @@ body {
   box-shadow: 0 0 20px rgba(255, 64, 129, 0.5);
 }
 
+/* Loader */
 #loader {
   position: absolute;
   top: 0;
@@ -73,12 +74,12 @@ body {
     #000;
   background-repeat: no-repeat;
   filter: blur(4px) contrast(10);
-  animation: l14 2s infinite;
+  animation: l14 2s infinite alternate;
 }
 
 @keyframes l14 {
-  50%  { background-position: right, left, center, right; }
-  100%  {background-position: left, left, center, right; }
+  0%   { background-position: left, left, center, left; }
+  100% { background-position: right, right, center, right; }
 }
 
 /* Model Viewer */
@@ -86,7 +87,6 @@ model-viewer {
   width: 100vw;
   height: 100vh;
   background-color: #000;
-  display: none;
 }
 
 /* AR Button */
